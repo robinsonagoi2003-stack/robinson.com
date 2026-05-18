@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Powered E-Learning Platform</title>
+  <style>
+    :root {
+      --bg: #0e1424;
+      --surface: #17213d;
+      --surface-strong: #202b50;
+      --text: #e8f0ff;
+      --accent: #5f8dff;
+      --accent-soft: rgba(95,141,255,0.16);
+      --muted: #9cb1d9;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
+    }
+
+    [data-theme="light"] {
+      --bg: #f4f7ff;
+      --surface: #ffffff;
+      --surface-strong: #eef2ff;
+      --text: #0d1b33;
+      --accent: #3b54ff;
+      --accent-soft: rgba(59,84,255,0.15);
+      --muted: #5d6c86;
+      --shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background: radial-gradient(circle at top, rgba(95,141,255,0.15), transparent 28%),
+                  linear-gradient(180deg, var(--bg) 0%, #0c1224 100%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .page {
+      width: min(1200px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 80px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      display: grid;
+      gap: 8px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(2rem, 3vw, 3rem);
+      letter-spacing: -0.04em;
+    }
+
+    .brand p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 38rem;
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .button, .pill {
+      border: none;
+      border-radius: 999px;
+      background: var(--accent);
+      color: white;
+      padding: 0.9rem 1.5rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 18px 40px rgba(28,52,114,0.24);
+    }
+
+    .button:hover, .pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 28px 50px rgba(28,52,114,0.28);
+    }
+
+    .pill {
+      background: var(--surface-strong);
+      color: var(--text);
+      box-shadow: none;
+    }
+
+    .hero-grid {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: minmax(0, 1.2fr) 0.8fr;
+      align-items: start;
+    }
+
+    .hero-panel {
+      padding: 28px;
+      background: var(--surface);
+      border-radius: 32px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(95,141,255,0.18), transparent 35%);
+      pointer-events: none;
+    }
+
+    .stat-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 20px;
+    }
+
+    .stat-card {
+      padding: 20px;
+      background: var(--surface-strong);
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: transform 0.25s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 1.5rem;
+    }
+
+    .modules, .assistant, .quiz, .notes, .recommendations {
+      margin-top: 28px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .section {
+      background: var(--surface);
+      border-radius: 32px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section h2 {
+      margin-top: 0;
+      margin-bottom: 16px;
+      font-size: 1.5rem;
+    }
+
+    .cards {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .course-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 20px;
+      border-radius: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+
+    .course-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(95,141,255,0.45);
+    }
+
+    .course-card h3 {
+      margin: 0;
+      font-size: 1.15rem;
+    }
+
+    .course-card p {
+      margin: 0;
+      color: var(--muted);
+      flex: 1;
+    }
+
+    .course-card span {
+      font-size: 0.9rem;
+      color: var(--accent);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 14px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #4bc0ff, #5f8dff);
+      border-radius: 999px;
+      transition: width 0.6s ease;
+    }
+
+    .assistant {
+      grid-template-columns: 1.5fr 0.9fr;
+    }
+
+    .assistant-chat {
+      display: grid;
+      gap: 16px;
+    }
+
+    .chat-log {
+      height: 380px;
+      overflow: auto;
+      padding: 18px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      gap: 12px;
+    }
+
+    .chat-bubble {
+      max-width: 88%;
+      padding: 16px;
+      border-radius: 22px;
+      line-height: 1.5;
+      font-size: 0.97rem;
+      white-space: pre-line;
+    }
+
+    .chat-bubble.user {
+      margin-left: auto;
+      background: rgba(95,141,255,0.16);
+      color: var(--text);
+    }
+
+    .chat-bubble.ai {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .assistant input,
+    .assistant textarea,
+    .search input,
+    .notes textarea,
+    .quiz input[type="radio"] {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      padding: 14px 16px;
+      font: inherit;
+      outline: none;
+    }
+
+    .assistant-form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .assistant-form button {
+      width: fit-content;
+    }
+
+    .task-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .task-item {
+      display: grid;
+      gap: 10px;
+      padding: 18px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .task-item.completed {
+      background: rgba(74, 215, 120, 0.14);
+      border-color: rgba(74, 215, 120, 0.25);
+    }
+
+    .task-item label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .task-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+    }
+
+    .quiz-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .quiz-question {
+      padding: 18px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      gap: 14px;
+    }
+
+    .quiz-options label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.07);
+      cursor: pointer;
+    }
+
+    .quiz-options input {
+      accent-color: var(--accent);
+    }
+
+    .quiz-result {
+      padding: 18px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .notes textarea {
+      height: 200px;
+      resize: vertical;
+    }
+
+    .secondary-panel {
+      display: grid;
+      gap: 20px;
+    }
+
+    .card-mini {
+      padding: 18px;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      gap: 10px;
+    }
+
+    .card-mini strong {
+      font-size: 1.2rem;
+    }
+
+    .search {
+      display: grid;
+      gap: 14px;
+    }
+
+    .search input {
+      width: 100%;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.9rem;
+      font-weight: 700;
+      width: fit-content;
+    }
+
+    footer {
+      margin-top: 36px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .auth-screen {
+      min-height: 100vh;
+      padding: 32px 16px;
+      background: radial-gradient(circle at top, rgba(95,141,255,0.12), transparent 28%), linear-gradient(180deg, var(--bg) 0%, #0b1022 100%);
+      display: grid;
+      place-items: center;
+    }
+
+    .auth-card {
+      width: min(520px, 100%);
+      background: rgba(17,26,51,0.95);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: var(--shadow);
+      border-radius: 32px;
+      padding: 32px;
+      display: grid;
+      gap: 22px;
+    }
+
+    .auth-header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .auth-header p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .auth-tab {
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px;
+      padding: 12px 18px;
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .auth-tab.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .auth-form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .auth-form.hidden {
+      display: none;
+    }
+
+    .auth-form input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      outline: none;
+      font: inherit;
+    }
+
+    .auth-form button {
+      width: 100%;
+    }
+
+    .auth-message {
+      color: #cbd6ff;
+      font-size: 0.95rem;
+      min-height: 1.3rem;
+    }
+
+    .email-preview {
+      border-radius: 24px;
+      padding: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      gap: 12px;
+      max-height: 260px;
+      overflow: auto;
+    }
+
+    .email-entry {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .user-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .user-bar strong {
+      color: var(--accent);
+    }
+
+    .admin-section {
+      display: none;
+    }
+
+    .admin-section.active {
+      display: block;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    .admin-table th,
+    .admin-table td {
+      padding: 14px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    .admin-table th {
+      color: var(--muted);
+    }
+
+    .admin-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(95,141,255,0.14);
+      color: var(--accent);
+      border: 1px solid rgba(95,141,255,0.2);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .link-button {
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 0.95rem;
+      padding: 0;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid, .assistant {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page { padding: 20px 0 56px; }
+      .button, .pill { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-screen" id="authScreen">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>AI Learning Login</h1>
+        <p>Sign in, register, verify your account, or reset your password.</p>
+      </div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-auth="login">Login</button>
+        <button class="auth-tab" data-auth="register">Register</button>
+      </div>
+      <form class="auth-form" id="loginForm">
+        <input type="email" id="loginEmail" placeholder="Email address" required />
+        <input type="password" id="loginPassword" placeholder="Password" required />
+        <button type="submit" class="button">Login</button>
+        <button type="button" class="link-button" id="showResetRequest">Forgot password?</button>
+      </form>
+      <form class="auth-form hidden" id="registerForm">
+        <input type="text" id="registerName" placeholder="Full name" required />
+        <input type="email" id="registerEmail" placeholder="Email address" required />
+        <input type="password" id="registerPassword" placeholder="Password" required />
+        <input type="password" id="registerConfirmPassword" placeholder="Confirm password" required />
+        <button type="submit" class="button">Register</button>
+      </form>
+      <form class="auth-form hidden" id="resetRequestForm">
+        <input type="email" id="resetEmail" placeholder="Enter your registered email" required />
+        <button type="submit" class="button">Send reset link</button>
+        <button type="button" class="link-button" id="backToLogin">Back to login</button>
+      </form>
+      <form class="auth-form hidden" id="resetForm">
+        <input type="text" id="resetToken" placeholder="Reset token from email" required />
+        <input type="password" id="resetNewPassword" placeholder="New password" required />
+        <input type="password" id="resetConfirmPassword" placeholder="Confirm new password" required />
+        <button type="submit" class="button">Reset password</button>
+      </form>
+      <div class="auth-message" id="authMessage"></div>
+      <div class="email-preview" id="emailInbox">
+        <strong>Mock email inbox</strong>
+        <p>Verification and reset messages will appear here. Click the links to complete the flow.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="app" style="display:none;">
+    <div class="user-bar" id="userBar" style="display:none;">
+      <div>
+        <strong id="currentUserLabel"></strong>
+        <span id="userRoleLabel"></span>
+      </div>
+      <div>
+        <button class="pill" id="viewEmailInboxBtn">Open Inbox</button>
+        <button class="pill" id="logoutButton">Logout</button>
+      </div>
+    </div>
+
+    <header>
+      <div class="brand">
+        <div class="badge">AI-Learning</div>
+        <h1>Smart education, personal learning journeys.</h1>
+        <p>Explore interactive AI-powered lessons, get instant recommendations, answer adaptive quizzes, and track learning progress in real time.</p>
+      </div>
+      <div class="control-row">
+        <button class="button" id="recommendButton">Get AI Recommendation</button>
+        <button class="pill" id="themeToggle">Toggle Theme</button>
+      </div>
+    </header>
+
+    <section class="hero-grid">
+      <article class="hero-panel">
+        <h2>Learning at your pace</h2>
+        <p>Use the AI assistant to discover courses, practice with quizzes, ask study questions, and save notes — all in one intelligent learning environment.</p>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <strong id="coursesCompleted">0</strong>
+            Courses completed
+          </div>
+          <div class="stat-card">
+            <strong id="hoursLearned">0</strong>
+            Hours learned
+          </div>
+          <div class="stat-card">
+            <strong id="skillsUnlocked">0</strong>
+            Skills unlocked
+          </div>
+        </div>
+
+        <div class="section" style="margin-top: 24px;">
+          <h2>Today's mission</h2>
+          <div class="task-list" id="taskList"></div>
+        </div>
+      </article>
+
+      <aside class="secondary-panel">
+        <div class="card-mini">
+          <strong>Search topics</strong>
+          <div class="search">
+            <input type="text" id="topicSearch" placeholder="Search courses, skills, lessons..." aria-label="Search courses" />
+          </div>
+        </div>
+
+        <div class="card-mini">
+          <strong>Recommended path</strong>
+          <p id="recommendedPath">Personalized study path appears after AI recommendation.</p>
+        </div>
+
+        <div class="card-mini">
+          <strong>Learning analytics</strong>
+          <p>Review your strengths, recent topics, and focus areas. The AI will adjust your learning path after every quiz.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section class="recommendations section">
+      <h2>AI course recommendations</h2>
+      <div class="cards" id="recommendationCards"></div>
+    </section>
+
+    <section class="modules section">
+      <h2>Featured modules</h2>
+      <div class="cards" id="moduleCards"></div>
+    </section>
+
+    <section class="admin section admin-section" id="adminSection">
+      <h2>Admin dashboard</h2>
+      <p>Manage registered users, verify accounts, and review pending requests.</p>
+      <div class="admin-table-wrapper">
+        <table class="admin-table" id="adminUsersTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Verified</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="assistant section">
+      <div class="assistant-chat">
+        <h2>AI Study Assistant</h2>
+        <div class="chat-log" id="chatLog"></div>
+        <form class="assistant-form" id="chatForm">
+          <textarea id="chatInput" rows="3" placeholder="Ask a question about a topic, course, or concept..." aria-label="Ask AI assistant"></textarea>
+          <button type="submit" class="button">Send question</button>
+        </form>
+      </div>
+      <div class="secondary-panel">
+        <div class="card-mini">
+          <strong>Quick actions</strong>
+          <button class="button" data-action="summary">Study summary</button>
+          <button class="button" data-action="plan">Weekly study plan</button>
+          <button class="button" data-action="motivate">Learning motivation</button>
+        </div>
+        <div class="card-mini">
+          <strong>Session insights</strong>
+          <p id="sessionInsight">The AI assistant is ready to help you learn faster with targeted feedback and course recommendations.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="quiz section" id="quizSection">
+      <h2>Adaptive quiz</h2>
+      <p>Answer the questions below and get instant feedback with AI insights.</p>
+      <div class="quiz-list" id="quizList"></div>
+      <button class="button" id="submitQuiz">Submit Quiz</button>
+      <div class="quiz-result" id="quizResult" style="display:none;"></div>
+    </section>
+
+    <section class="notes section">
+      <div style="display:grid; gap:16px;">
+        <h2>Study notes</h2>
+        <textarea id="learningNotes" placeholder="Write down key ideas, reminders, and revision notes..."></textarea>
+        <button class="button" id="saveNotes">Save notes</button>
+      </div>
+    </section>
+
+    <footer>
+      Built as a fully self-contained AI-powered e-learning demo. Your progress, recommendations, and notes are stored locally in the browser.
+    </footer>
+  </div>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const recommendButton = document.getElementById('recommendButton');
+    const topicSearch = document.getElementById('topicSearch');
+    const recommendationCards = document.getElementById('recommendationCards');
+    const moduleCards = document.getElementById('moduleCards');
+    const chatLog = document.getElementById('chatLog');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const quizList = document.getElementById('quizList');
+    const submitQuiz = document.getElementById('submitQuiz');
+    const quizResult = document.getElementById('quizResult');
+    const learningNotes = document.getElementById('learningNotes');
+    const saveNotes = document.getElementById('saveNotes');
+    const taskList = document.getElementById('taskList');
+    const coursesCompleted = document.getElementById('coursesCompleted');
+    const hoursLearned = document.getElementById('hoursLearned');
+    const skillsUnlocked = document.getElementById('skillsUnlocked');
+    const recommendedPath = document.getElementById('recommendedPath');
+    const sessionInsight = document.getElementById('sessionInsight');
+    const authScreen = document.getElementById('authScreen');
+    const app = document.getElementById('app');
+    const authTabs = document.querySelectorAll('.auth-tab');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const resetRequestForm = document.getElementById('resetRequestForm');
+    const resetForm = document.getElementById('resetForm');
+    const showResetRequest = document.getElementById('showResetRequest');
+    const backToLogin = document.getElementById('backToLogin');
+    const authMessage = document.getElementById('authMessage');
+    const emailInbox = document.getElementById('emailInbox');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const registerName = document.getElementById('registerName');
+    const registerEmail = document.getElementById('registerEmail');
+    const registerPassword = document.getElementById('registerPassword');
+    const registerConfirmPassword = document.getElementById('registerConfirmPassword');
+    const resetEmail = document.getElementById('resetEmail');
+    const resetToken = document.getElementById('resetToken');
+    const resetNewPassword = document.getElementById('resetNewPassword');
+    const resetConfirmPassword = document.getElementById('resetConfirmPassword');
+    const userBar = document.getElementById('userBar');
+    const currentUserLabel = document.getElementById('currentUserLabel');
+    const userRoleLabel = document.getElementById('userRoleLabel');
+    const logoutButton = document.getElementById('logoutButton');
+    const viewEmailInboxBtn = document.getElementById('viewEmailInboxBtn');
+    const adminSection = document.getElementById('adminSection');
+    const adminUsersTableBody = document.querySelector('#adminUsersTable tbody');
+    const quickActions = document.querySelectorAll('[data-action]');
+
+    const defaultUsers = [
+      { name: 'Admin', email: 'admin@example.com', password: 'Admin123!', role: 'admin', verified: true, verifyToken: '', resetToken: '' }
+    ];
+
+    const state = {
+      theme: localStorage.getItem('elearning-theme') || 'dark',
+      notes: localStorage.getItem('elearning-notes') || '',
+      completedTasks: JSON.parse(localStorage.getItem('elearning-tasks') || '[]'),
+      users: JSON.parse(localStorage.getItem('elearning-users') || 'null') || defaultUsers,
+      emails: JSON.parse(localStorage.getItem('elearning-emails') || '[]'),
+      currentUserEmail: localStorage.getItem('elearning-session') || null,
+      recommendedTopic: null,
+      quizAnswers: {},
+      progress: JSON.parse(localStorage.getItem('elearning-progress') || 'null') || {
+        courses: 2,
+        hours: 12,
+        skills: 4
+      },
+      pendingResetEmail: null
+    };
+
+    const topics = [
+      { title: 'AI in Education', description: 'Explore how AI personalizes learning paths and assessment.', level: 'Intermediate', duration: '45 min' },
+      { title: 'Data Science Foundations', description: 'Learn the basics of statistics, Python, and data visualization.', level: 'Beginner', duration: '60 min' },
+      { title: 'UX Design for eLearning', description: 'Design engaging user flows and accessible learning experiences.', level: 'Beginner', duration: '35 min' },
+      { title: 'Productivity & Learning Habits', description: 'Build routines to stay consistent with your study goals.', level: 'All Levels', duration: '30 min' }
+    ];
+
+    const modules = [
+      { title: 'Adaptive Learning Engine', description: 'Build self-paced course suggestions using AI feedback loops.', tag: 'AI' },
+      { title: 'Smart Study Assistant', description: 'Chat with an assistant that answers your questions and motivates you.', tag: 'Support' },
+      { title: 'Engaging Quizzes', description: 'Take adaptive quizzes that track your performance in real time.', tag: 'Assessment' },
+      { title: 'Progress Analytics', description: 'Visualize your learning progress, streaks, and milestones.', tag: 'Growth' }
+    ];
+
+    const tasks = [
+      { id: 'task1', label: 'Review today’s recommended topic' },
+      { id: 'task2', label: 'Complete one quiz session' },
+      { id: 'task3', label: 'Add lecture notes to your journal' },
+      { id: 'task4', label: 'Practice a flashcard review' }
+    ];
+
+    const quizQuestions = [
+      { question: 'What is adaptive learning?', options: ['A training schedule', 'A personalized learning path', 'A grading system', 'A video lecture'], answer: 1 },
+      { question: 'Why is note-taking important?', options: ['It increases retention', 'It wastes time', 'It replaces practice', 'It lowers focus'], answer: 0 },
+      { question: 'Which skill helps you stay consistent?', options: ['Ignoring deadlines', 'Daily planning', 'Multitasking constantly', 'Studying only once'], answer: 1 }
+    ];
+
+    const aiResponses = {
+      summary: 'Review your progress cards, complete one quiz, and save notes for retention. Your study assistant is always available for quick guidance.',
+      plan: 'Start with a beginner topic, complete the recommended course module, and track your progress after each session.',
+      motivate: 'You’re doing great! Small daily steps build strong learning habits—keep going.',
+      help: 'Ask me to explain a concept, provide reminders, or recommend your next study goal.'
+    };
+
+    function addChatBubble(message, sender) {
+      const bubble = document.createElement('div');
+      bubble.className = `chat-message ${sender}`;
+      bubble.textContent = message;
+      chatLog.appendChild(bubble);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    function handleChatSubmit(message) {
+      const text = message.trim();
+      if (!text) return;
+      addChatBubble(text, 'user');
+      const normalized = text.toLowerCase();
+      let response = 'I am here to help. Try asking about topics, notes, or progress.';
+      if (normalized.includes('recommend')) {
+        response = 'Try the AI in Education topic or explore Productivity & Learning Habits to improve your study routine.';
+      } else if (normalized.includes('quiz')) {
+        response = 'Your quiz will help reinforce learning. Answer questions carefully and review any topics you miss.';
+      } else if (normalized.includes('notes')) {
+        response = 'Use the notes section to summarize key ideas and build memory retention from each session.';
+      } else if (normalized.includes('progress')) {
+        response = `You have completed ${state.progress.courses} courses, ${state.progress.hours} hours, and unlocked ${state.progress.skills} skills.`;
+      }
+      addChatBubble(response, 'ai');
+    }
+
+    function gradeQuiz() {
+      const answers = Array.from(document.querySelectorAll('input[type="radio"]:checked'));
+      const correctCount = answers.reduce((count, input) => {
+        const questionIndex = Number(input.name.replace('question-', ''));
+        return count + (Number(input.value) === quizQuestions[questionIndex].answer ? 1 : 0);
+      }, 0);
+      quizResult.textContent = `You answered ${correctCount} of ${quizQuestions.length} correctly.`;
+      if (correctCount === quizQuestions.length) {
+        state.progress.courses += 1;
+        state.progress.hours += 1;
+        state.progress.skills += 1;
+        saveProgress();
+        updateProgressPanel();
+        setAuthMessage('Great job! Your progress has been updated.', 'success');
+      } else {
+        setAuthMessage('Review the material and try again to improve your score.', 'info');
+      }
+    }
+
+    function saveLearningNotes() {
+      state.notes = learningNotes.value;
+      localStorage.setItem('elearning-notes', state.notes);
+      setAuthMessage('Your notes are saved locally in the browser.', 'success');
+    }
+
+    function loadNotes() {
+      learningNotes.value = state.notes;
+    }
+
+    function generateRecommendation() {
+      const topic = topics[Math.floor(Math.random() * topics.length)];
+      recommendedPath.textContent = `${topic.title}: ${topic.description}`;
+      sessionInsight.textContent = 'Your AI guide selected a topic based on your learning profile.';
+    }
+
+    function saveUsers() {
+      localStorage.setItem('elearning-users', JSON.stringify(state.users));
+    }
+
+    function saveProgress() {
+      localStorage.setItem('elearning-progress', JSON.stringify(state.progress));
+    }
+
+    function saveEmails() {
+      localStorage.setItem('elearning-emails', JSON.stringify(state.emails));
+    }
+
+    function saveSession() {
+      if (state.currentUserEmail) {
+        localStorage.setItem('elearning-session', state.currentUserEmail);
+      } else {
+        localStorage.removeItem('elearning-session');
+      }
+    }
+
+    function getCurrentUser() {
+      return state.users.find(user => user.email.toLowerCase() === state.currentUserEmail?.toLowerCase());
+    }
+
+    function getUserByEmail(email) {
+      return state.users.find(user => user.email.toLowerCase() === email.toLowerCase());
+    }
+
+    function setAuthMessage(message, type = 'info') {
+      authMessage.textContent = message;
+      authMessage.style.color = type === 'error' ? '#ff8aa3' : type === 'success' ? '#9dffdf' : '#cbd6ff';
+    }
+
+    function createToken() {
+      return Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
+    }
+
+    function renderEmailInbox() {
+      if (!state.emails.length) {
+        emailInbox.innerHTML = '<strong>Mock email inbox</strong><p>No messages yet. Verification and reset messages will appear here.</p>';
+        return;
+      }
+
+      emailInbox.innerHTML = `
+        <strong>Mock email inbox</strong>
+        ${state.emails.map(email => `
+          <div class="email-entry">
+            <strong>${email.subject}</strong>
+            <p><em>To: ${email.to}</em></p>
+            <p>${email.body.replace(/\n/g, '<br>')}</p>
+            ${email.type === 'verification' ? `<button class="link-button" data-email-action="verify" data-token="${email.token}">Click to verify</button>` : ''}
+            ${email.type === 'reset' ? `<button class="link-button" data-email-action="reset" data-token="${email.token}" data-email="${email.to}">Reset password</button>` : ''}
+          </div>
+        `).join('')}
+      `;
+    }
+
+    function sendEmail(type, to, subject, body, token) {
+      state.emails.unshift({
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        type,
+        to,
+        subject,
+        body,
+        token,
+        createdAt: new Date().toISOString()
+      });
+      saveEmails();
+      renderEmailInbox();
+    }
+
+    function sendVerificationEmail(user) {
+      user.verifyToken = createToken();
+      saveUsers();
+      sendEmail(
+        'verification',
+        user.email,
+        'Verify your AI Learning account',
+        `Hi ${user.name},\n\nClick this link to verify your account:\n\nVerification code: ${user.verifyToken}\n\nUse the inbox below to complete verification.`,
+        user.verifyToken
+      );
+      setAuthMessage(`Verification email sent to ${user.email}.`, 'success');
+    }
+
+    function sendResetEmail(user) {
+      user.resetToken = createToken();
+      saveUsers();
+      sendEmail(
+        'reset',
+        user.email,
+        'Reset your AI Learning password',
+        `Hi ${user.name},\n\nUse this token to reset your password:\n\nReset token: ${user.resetToken}\n\nUse the inbox below to complete password reset.`,
+        user.resetToken
+      );
+      setAuthMessage(`Password reset email sent to ${user.email}.`, 'success');
+    }
+
+    function ensureDefaultAdmin() {
+      const adminExists = state.users.some(user => user.role === 'admin');
+      if (!adminExists) {
+        state.users.unshift(defaultUsers[0]);
+        saveUsers();
+      }
+    }
+
+    function switchAuthForm(tabName, clearMessage = true) {
+      authTabs.forEach(tab => tab.classList.toggle('active', tab.dataset.auth === tabName));
+      loginForm.classList.toggle('hidden', tabName !== 'login');
+      registerForm.classList.toggle('hidden', tabName !== 'register');
+      resetRequestForm.classList.toggle('hidden', tabName !== 'resetRequest');
+      resetForm.classList.toggle('hidden', tabName !== 'resetForm');
+      authScreen.scrollTop = 0;
+      if (clearMessage) {
+        setAuthMessage('');
+      }
+    }
+
+    function verifyAccount(token) {
+      const user = state.users.find(u => u.verifyToken === token);
+      if (!user) {
+        setAuthMessage('Verification code not found. Please try again.', 'error');
+        return;
+      }
+      user.verified = true;
+      user.verifyToken = '';
+      saveUsers();
+      setAuthMessage('Email verified! Please log in with your credentials.', 'success');
+      switchAuthForm('login', false);
+    }
+
+    function handleLogin(email, password) {
+      const user = getUserByEmail(email);
+      if (!user) {
+        setAuthMessage('No account found with that email.', 'error');
+        return;
+      }
+      if (user.password !== password) {
+        setAuthMessage('Incorrect password. Please try again.', 'error');
+        return;
+      }
+      if (!user.verified) {
+        setAuthMessage('Account not verified. Use the mock inbox to verify your email.', 'error');
+        return;
+      }
+      state.currentUserEmail = user.email;
+      saveSession();
+      openApp();
+      setAuthMessage('');
+    }
+
+    function handleRegister(name, email, password, confirmPassword) {
+      if (password !== confirmPassword) {
+        setAuthMessage('Passwords do not match.', 'error');
+        return;
+      }
+      if (getUserByEmail(email)) {
+        setAuthMessage('This email is already registered.', 'error');
+        return;
+      }
+      const newUser = {
+        name,
+        email,
+        password,
+        role: 'user',
+        verified: false,
+        verifyToken: '',
+        resetToken: ''
+      };
+      state.users.push(newUser);
+      saveUsers();
+      sendVerificationEmail(newUser);
+      setAuthMessage('Account created. A verification message has been sent.', 'success');
+      switchAuthForm('login', false);
+    }
+
+    function handlePasswordResetRequest(email) {
+      const user = getUserByEmail(email);
+      if (!user) {
+        setAuthMessage('No account matches that email.', 'error');
+        return;
+      }
+      sendResetEmail(user);
+      switchAuthForm('login', false);
+    }
+
+    function handlePasswordReset(token, newPassword, confirmPassword) {
+      if (newPassword !== confirmPassword) {
+        setAuthMessage('Passwords do not match.', 'error');
+        return;
+      }
+      const user = state.users.find(u => u.resetToken === token);
+      if (!user) {
+        setAuthMessage('Reset token not found. Please use the link from your email.', 'error');
+        return;
+      }
+      user.password = newPassword;
+      user.resetToken = '';
+      saveUsers();
+      setAuthMessage('Password updated successfully. Please log in.', 'success');
+      switchAuthForm('login', false);
+    }
+
+    function renderAdminUsers() {
+      adminUsersTableBody.innerHTML = state.users.map(user => `
+        <tr>
+          <td>${user.name}</td>
+          <td>${user.email}</td>
+          <td>${user.role}</td>
+          <td>${user.verified ? 'Yes' : 'No'}</td>
+          <td>
+            ${user.role !== 'admin' ? `
+              <button class="admin-action" data-admin="toggleVerify" data-email="${user.email}">${user.verified ? 'Revoke' : 'Verify'}</button>
+              <button class="admin-action" data-admin="sendReset" data-email="${user.email}">Send reset</button>
+            ` : '—'}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openApp() {
+      authScreen.style.display = 'none';
+      app.style.display = 'block';
+      userBar.style.display = 'flex';
+      const currentUser = getCurrentUser();
+      if (currentUser) {
+        currentUserLabel.textContent = `${currentUser.name} (${currentUser.email})`;
+        userRoleLabel.textContent = currentUser.role === 'admin' ? 'Admin account' : 'Learner account';
+        adminSection.classList.toggle('active', currentUser.role === 'admin');
+      }
+      renderAdminUsers();
+      renderEmailInbox();
+      updateProgressPanel();
+      renderTasks();
+      renderModules();
+      renderRecommendations(topics);
+      renderQuiz();
+    }
+
+    function logout() {
+      state.currentUserEmail = null;
+      saveSession();
+      authScreen.style.display = 'grid';
+      app.style.display = 'none';
+      userBar.style.display = 'none';
+      setAuthMessage('You have been logged out.', 'info');
+      switchAuthForm('login', false);
+    }
+
+    authTabs.forEach(tab => {
+      tab.addEventListener('click', () => switchAuthForm(tab.dataset.auth));
+    });
+
+    loginForm.addEventListener('submit', event => {
+      event.preventDefault();
+      handleLogin(loginEmail.value.trim(), loginPassword.value);
+    });
+
+    registerForm.addEventListener('submit', event => {
+      event.preventDefault();
+      handleRegister(registerName.value.trim(), registerEmail.value.trim(), registerPassword.value, registerConfirmPassword.value);
+    });
+
+    resetRequestForm.addEventListener('submit', event => {
+      event.preventDefault();
+      handlePasswordResetRequest(resetEmail.value.trim());
+    });
+
+    resetForm.addEventListener('submit', event => {
+      event.preventDefault();
+      handlePasswordReset(resetToken.value.trim(), resetNewPassword.value, resetConfirmPassword.value);
+    });
+
+    showResetRequest.addEventListener('click', () => switchAuthForm('resetRequest'));
+    backToLogin.addEventListener('click', () => switchAuthForm('login'));
+    logoutButton.addEventListener('click', logout);
+    viewEmailInboxBtn.addEventListener('click', () => {
+      authScreen.style.display = 'grid';
+      app.style.display = 'none';
+      setAuthMessage('Your mock inbox is visible. Use the verification and reset links there.');
+      switchAuthForm('login', false);
+    });
+
+    document.addEventListener('click', event => {
+      const emailAction = event.target.closest('[data-email-action]');
+      if (emailAction) {
+        const token = emailAction.dataset.token;
+        const action = emailAction.dataset.emailAction;
+        if (action === 'verify') {
+          verifyAccount(token);
+        } else if (action === 'reset') {
+          const email = emailAction.dataset.email;
+          const user = getUserByEmail(email);
+          if (user) {
+            state.pendingResetEmail = email;
+            resetToken.value = token;
+            switchAuthForm('resetForm');
+            setAuthMessage('Enter a new password and submit the reset form.');
+          }
+        }
+        return;
+      }
+
+      const adminAction = event.target.closest('[data-admin]');
+      if (adminAction) {
+        const action = adminAction.dataset.admin;
+        const targetEmail = adminAction.dataset.email;
+        const user = getUserByEmail(targetEmail);
+        if (!user) return;
+        if (action === 'toggleVerify') {
+          user.verified = !user.verified;
+          saveUsers();
+          renderAdminUsers();
+          setAuthMessage(`User ${user.email} verification status updated.`, 'success');
+        }
+        if (action === 'sendReset') {
+          sendResetEmail(user);
+        }
+        return;
+      }
+
+      const quickAction = event.target.closest('[data-action]');
+      if (quickAction) {
+        const action = quickAction.dataset.action;
+        addChatBubble(quickAction.textContent, 'user');
+        addChatBubble(aiResponses[action] || 'I have an insight for you.', 'ai');
+        if (action === 'summary') {
+          sessionInsight.textContent = aiResponses.summary;
+        } else if (action === 'plan') {
+          sessionInsight.textContent = aiResponses.plan;
+        } else if (action === 'motivate') {
+          sessionInsight.textContent = aiResponses.motivate;
+        }
+      }
+    });
+
+    topicSearch.addEventListener('input', event => renderRecommendations(searchTopics(event.target.value)));
+    themeToggle.addEventListener('click', () => {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      applyTheme();
+    });
+    recommendButton.addEventListener('click', () => {
+      generateRecommendation();
+      state.completedTasks = [...new Set([...state.completedTasks, 'task1'])];
+      localStorage.setItem('elearning-tasks', JSON.stringify(state.completedTasks));
+      renderTasks();
+    });
+    chatForm.addEventListener('submit', event => {
+      event.preventDefault();
+      handleChatSubmit(chatInput.value);
+      chatInput.value = '';
+    });
+    submitQuiz.addEventListener('click', gradeQuiz);
+    saveNotes.addEventListener('click', saveLearningNotes);
+
+    taskList.addEventListener('change', event => {
+      const checkbox = event.target.closest('input[type="checkbox"][data-task]');
+      if (!checkbox) return;
+      const taskId = checkbox.dataset.task;
+      if (checkbox.checked) {
+        state.completedTasks = [...new Set([...state.completedTasks, taskId])];
+      } else {
+        state.completedTasks = state.completedTasks.filter(id => id !== taskId);
+      }
+      localStorage.setItem('elearning-tasks', JSON.stringify(state.completedTasks));
+      renderTasks();
+    });
+
+    function applyTheme() {
+      document.documentElement.setAttribute('data-theme', state.theme);
+      themeToggle.textContent = state.theme === 'dark' ? 'Switch to Light' : 'Switch to Dark';
+      localStorage.setItem('elearning-theme', state.theme);
+    }
+
+    function renderModules() {
+      moduleCards.innerHTML = modules.map(module => `
+        <article class="course-card">
+          <h3>${module.title}</h3>
+          <p>${module.description}</p>
+          <span>${module.tag}</span>
+        </article>
+      `).join('');
+    }
+
+    function renderRecommendations(list) {
+      recommendationCards.innerHTML = list.map(topic => `
+        <article class="course-card">
+          <h3>${topic.title}</h3>
+          <p>${topic.description}</p>
+          <span>${topic.level} · ${topic.duration}</span>
+        </article>
+      `).join('');
+    }
+
+    function searchTopics(query) {
+      const lower = query.trim().toLowerCase();
+      if (!lower) {
+        return topics;
+      }
+      return topics.filter(topic =>
+        topic.title.toLowerCase().includes(lower) ||
+        topic.description.toLowerCase().includes(lower) ||
+        topic.level.toLowerCase().includes(lower)
+      );
+    }
+
+    function renderQuiz() {
+      quizList.innerHTML = quizQuestions.map((item, index) => `
+        <section class="quiz-question">
+          <strong>${index + 1}. ${item.question}</strong>
+          <div class="quiz-options">
+            ${item.options.map((option, optionIndex) => `
+              <label>
+                <input type="radio" name="question-${index}" value="${optionIndex}" />
+                <span>${option}</span>
+              </label>
+            `).join('')}
+          </div>
+        </section>
+      `).join('');
+    }
+
+    function renderTasks() {
+      taskList.innerHTML = tasks.map(task => {
+        const done = state.completedTasks.includes(task.id);
+        return `
+          <article class="task-item ${done ? 'completed' : ''}">
+            <label>
+              <input type="checkbox" data-task="${task.id}" ${done ? 'checked' : ''} />
+              <span>${task.label}</span>
+            </label>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function updateProgressPanel() {
+      coursesCompleted.textContent = state.progress.courses;
+      hoursLearned.textContent = state.progress.hours;
+      skillsUnlocked.textContent = state.progress.skills;
+    }
+
+    function init() {
+      ensureDefaultAdmin();
+      applyTheme();
+      renderModules();
+      renderRecommendations(topics);
+      renderQuiz();
+      renderTasks();
+      loadNotes();
+      updateProgressPanel();
+      renderEmailInbox();
+      if (state.currentUserEmail) {
+        const currentUser = getCurrentUser();
+        if (currentUser && currentUser.verified) {
+          openApp();
+          addChatBubble('Welcome back! I am your AI tutor, ready to help you learn.', 'ai');
+          return;
+        }
+      }
+      authScreen.style.display = 'grid';
+      app.style.display = 'none';
+      userBar.style.display = 'none';
+      setAuthMessage('Use the login or registration form to continue.');
+    }
+
+    init();
+  </script>
+</body>
+</html>
