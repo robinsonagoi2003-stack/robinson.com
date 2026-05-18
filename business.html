@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventHub Business Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>EventHub Business Platform</h1>
+        <p>Your business event management dashboard with secure registration and login.</p>
+    </header>
+
+    <main>
+        <div class="card auth-panel">
+            <div class="tabs">
+                <button id="loginTab" class="active">Login</button>
+                <button id="registerTab">Register</button>
+            </div>
+
+            <div id="loginForm" class="form-card">
+                <form id="loginFormElement">
+                    <div class="form-grid">
+                        <label>Email
+                            <input id="loginEmail" type="email" required placeholder="your@email.com">
+                        </label>
+                        <label>Password
+                            <input id="loginPassword" type="password" required placeholder="Enter password">
+                        </label>
+                        <button type="submit" class="primary">Login to EventHub</button>
+                    </div>
+                </form>
+                <div id="loginMessage" class="message hidden"></div>
+            </div>
+
+            <div id="registerForm" class="form-card hidden">
+                <form id="registerFormElement">
+                    <div class="form-grid">
+                        <label>Full Name
+                            <input id="registerName" type="text" required placeholder="Your name">
+                        </label>
+                        <label>Company
+                            <input id="registerCompany" type="text" placeholder="Optional company">
+                        </label>
+                        <label>Email
+                            <input id="registerEmail" type="email" required placeholder="your@email.com">
+                        </label>
+                        <label>Password
+                            <input id="registerPassword" type="password" required placeholder="Create a password">
+                        </label>
+                        <button type="submit" class="primary">Register new account</button>
+                    </div>
+                </form>
+                <div id="registerMessage" class="message hidden"></div>
+            </div>
+        </div>
+
+        <div id="dashboard" class="card hidden">
+            <div class="profile-card">
+                <h2>Welcome back, <span id="profileName"></span></h2>
+                <div class="profile-meta">
+                    <span><strong>Email:</strong> <span id="profileEmail"></span></span>
+                    <span><strong>Company:</strong> <span id="profileCompany"></span></span>
+                </div>
+                <button id="logoutButton" class="primary">Logout</button>
+            </div>
+
+            <div class="section-card">
+                <h3>EventHub highlights</h3>
+                <div class="card-list">
+                    <div class="event-item">
+                        <div>
+                            <strong>Event Planner</strong>
+                            <p>Track event rollout, attendees, and team tasks.</p>
+                        </div>
+                        <span class="event-status planned">Ready</span>
+                    </div>
+                    <div class="event-item">
+                        <div>
+                            <strong>Sales & orders</strong>
+                            <p>Connect event services with business operations.</p>
+                        </div>
+                        <span class="event-status live">Live</span>
+                    </div>
+                    <div class="event-item">
+                        <div>
+                            <strong>Analytics</strong>
+                            <p>Use the dashboard to monitor engagement at a glance.</p>
+                        </div>
+                        <span class="event-status complete">Stable</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
